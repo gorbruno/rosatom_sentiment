@@ -1,0 +1,35 @@
+services:
+  app-server:
+    build: ./app-server/
+    container_name: TD_app-server # TD - Tone Detector (SHIFTLAB project)
+    ports: 
+      - 8080:8080
+    depends_on: # define container build order
+      - ml-service
+      - db
+  ml-service:
+    build: ./ml-service/
+    container_name: TD_ml-service
+    ports: 
+      - 8000:8000
+  db:
+    image: postgres   # use official postgres image
+    restart: always
+    container_name: TD_db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}          # default superuser. Also default database name if POSTGRES_DB is not specified
+      - POSTGRES_PASSWORD=${DB_PASSWORD}  # superuser password  
+      - POSTGRES_DB=${DB_NAME}            # database name. Define a different name for the default database
+  pgadmin:    # use pgadmin container started for comfortable database interraction
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - 5050:80 # use default web-port inside the container
+    depends_on:
+      - db
+

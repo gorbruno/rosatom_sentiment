@@ -1,0 +1,2 @@
+SUCCESS_CODE = 200
+ANALYSIS = "/analysis"
